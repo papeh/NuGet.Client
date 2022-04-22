@@ -885,15 +885,25 @@ namespace NuGet.CommandLine
             restoreInputs.DirectoryOfSolutionFile = Path.GetDirectoryName(solutionFileFullPath);
             restoreInputs.NameOfSolutionFile = Path.GetFileNameWithoutExtension(solutionFileFullPath);
 
-            // restore packages for the solution
-            var solutionLevelPackagesConfig = Path.Combine(
-                restoreInputs.DirectoryOfSolutionFile,
-                NuGetConstants.NuGetSolutionSettingsFolder,
-                Constants.PackageReferenceFile);
-
-            if (File.Exists(solutionLevelPackagesConfig))
+            try
             {
-                restoreInputs.PackagesConfigFiles.Add(solutionLevelPackagesConfig);
+                // restore packages for the solution
+                var solutionLevelPackagesConfig = Path.Combine(
+                    restoreInputs.DirectoryOfSolutionFile.Trim('\"'),
+                    NuGetConstants.NuGetSolutionSettingsFolder,
+                    Constants.PackageReferenceFile);
+
+                if (File.Exists(solutionLevelPackagesConfig))
+                {
+                    restoreInputs.PackagesConfigFiles.Add(solutionLevelPackagesConfig);
+                }
+            }
+            catch (ArgumentException e)
+            {
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
+                        LocalizedResourceManager.GetString("Error_InvalidSolutionDirectory"),
+                        restoreInputs.DirectoryOfSolutionFile),
+                    e);
             }
 
             var projectFiles = MsBuildUtility.GetAllProjectFileNames(solutionFileFullPath, MsBuildDirectory.Value.Path);

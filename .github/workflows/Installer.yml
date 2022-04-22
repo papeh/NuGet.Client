@@ -47,7 +47,7 @@ jobs:
     - name: Build
       # env:
         # ACTIONS_ALLOW_UNSECURE_COMMANDS: true # So gitversion can set environment vars during the build
-      run: ./build.ps1
+      run: ./build.ps1 -SkipUnitTest
       shell: pwsh
         
     - name: Publish

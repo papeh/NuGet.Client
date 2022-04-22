@@ -3,9 +3,9 @@ name: NuGet Installer
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ dev, feature/gha ]
   pull_request:
-    branches: [ dev ]
+    branches: [ dev, feature/gha ]
 
 jobs:
 
